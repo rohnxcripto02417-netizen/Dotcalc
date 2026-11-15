@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dotcalc</title>
+<meta name="description" content="Dotcalc: a minimal pixel-style calculator and unit converter. Works offline.">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<noscript><p style="padding:24px;font-family:sans-serif">Dotcalc needs JavaScript to run.</p></noscript>
+<main>
+  <header class="top" id="top">
+    <button class="ic" id="bExp" aria-label="Scientific keys"></button>
+    <nav class="tabs"><button id="tCalc" aria-pressed="true">Calculator</button><button id="tConv" aria-pressed="false">Converter</button></nav>
+    <button class="ic" id="bMenu" aria-label="Menu"></button>
+    <div class="menu" id="menu" hidden>
+      <button id="mHist">History</button><button id="mSet">Settings</button><button id="mAbout">About</button>
+    </div>
+  </header>
+
+  <section id="vCalc">
+    <div class="screen" aria-live="polite">
+      <div class="hist" id="hist"></div>
+      <div class="expr" id="expr">0</div>
+      <button class="val" id="val" aria-label="Result, tap to copy"></button>
+    </div>
+    <div class="keys">
+      <div class="mem" id="mem" hidden>
+        <button data-k="mc">MC</button><button data-k="mr" id="mr">MR</button><button data-k="m+">M+</button><button data-k="m-">M−</button>
+      </div>
+      <div class="sci" id="sci" hidden>
+        <button data-k="sin(">sin</button><button data-k="cos(">cos</button><button data-k="tan(">tan</button><button data-k="sqrt(" aria-label="Square root">√</button>
+        <button data-k="ln(">ln</button><button data-k="log(">log</button><button data-k="sq" aria-label="Square">x²</button><button data-k="^" aria-label="Power">^</button>
+        <button data-k="(">(</button><button data-k=")">)</button><button data-k="pi" aria-label="Pi">π</button><button data-k="e" aria-label="Euler's number">e</button>
+        <button data-k="!" aria-label="Factorial">x!</button><button data-k="inv" aria-label="Reciprocal">1/x</button><button data-k="neg" aria-label="Toggle sign">±</button><button data-k="abs(" aria-label="Absolute value">|x|</button>
+      </div>
+      <div class="pad">
+        <button class="op" data-k="AC">C</button><button class="op" data-k="DEL" id="kDel" aria-label="Delete"></button><button class="op" data-k="%">%</button><button class="op" data-k="/" aria-label="Divide">÷</button>
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button class="op" data-k="*" aria-label="Multiply">×</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button class="op" data-k="-" aria-label="Subtract">−</button>
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button class="op" data-k="+" aria-label="Add">+</button>
+        <button class="op" id="kConv" aria-label="Open converter"></button><button data-k="0">0</button><button data-k=".">.</button><button class="eq" data-k="=" aria-label="Equals">=</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="vConv" hidden><div class="cgrid" id="cgrid"></div></section>
+
+  <section id="vTool" hidden>
+    <header class="thead"><button class="ic" id="tBack" aria-label="Back"></button><span id="tTitle"></span></header>
+    <div id="tBody"></div>
+  </section>
+</main>
+
+<section class="sheet" id="sheet" hidden aria-label="History">
+  <div class="bar"><button id="hClear">CLEAR</button><button id="hClose">CLOSE</button></div>
+  <div class="list" id="list"></div>
+</section>
+
+<section class="sheet" id="setSheet" hidden aria-label="Settings">
+  <div class="bar"><button id="sReset">RESET</button><button id="sClose">CLOSE</button></div>
+  <div class="list set">
+    <div class="row"><span>Theme</span><div class="seg" data-s="theme"><button data-v="auto">AUTO</button><button data-v="light">LIGHT</button><button data-v="dark">DARK</button></div></div>
+    <div class="row"><span>Accent</span><div class="seg sw" data-s="accent">
+      <button data-v="orange" aria-label="Orange" style="background:#F0851A"></button><button data-v="blue" aria-label="Blue" style="background:#2B50F0"></button>
+      <button data-v="green" aria-label="Green" style="background:#0F8A4F"></button><button data-v="pink" aria-label="Pink" style="background:#D6246E"></button></div></div>
+    <div class="row"><span>Scientific keys</span><div class="seg" data-s="sci"><button data-v="on">ON</button><button data-v="off">OFF</button></div></div>
+    <div class="row"><span>Key size</span><div class="seg" data-s="size"><button data-v="normal">NORMAL</button><button data-v="large">LARGE</button></div></div>
+    <div class="row"><span>Decimal places</span><div class="seg" data-s="dec"><button data-v="auto">AUTO</button><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></div></div>
+    <div class="row"><span>Angle unit</span><div class="seg" data-s="angle"><button data-v="deg">DEG</button><button data-v="rad">RAD</button></div></div>
+    <div class="row"><span>Thousands separator</span><div class="seg" data-s="sep"><button data-v="on">ON</button><button data-v="off">OFF</button></div></div>
+    <div class="row"><span>Remember history</span><div class="seg" data-s="keep"><button data-v="on">ON</button><button data-v="off">OFF</button></div></div>
+    <div class="row"><span>Haptics</span><div class="seg" data-s="haptics"><button data-v="on">ON</button><button data-v="off">OFF</button></div></div>
+    <div class="row"><span>Key sound</span><div class="seg" data-s="sound"><button data-v="on">ON</button><button data-v="off">OFF</button></div></div>
+  </div>
+</section>
+
+<section class="sheet" id="aboutSheet" hidden aria-label="About">
+  <div class="bar"><button id="aClose">CLOSE</button></div>
+  <div class="list about">
+    <h1>Dotcalc</h1>
+    <dl>
+      <dt>Version</dt><dd>2.0.0</dd>
+      <dt>Released</dt><dd>November 2026</dd>
+      <dt>Developed by</dt><dd>Rohan</dd>
+      <dt>Display font</dt><dd>Dotty by Kevin Richey</dd>
+      <dt>Key font</dt><dd>Tiny5 by Stefan Schmidt</dd>
+      <dt>Tools</dt><dd>Calculator, Currency, Length, Mass, Area, Time, Data, Discount, Volume, Numeral system, Speed, Temperature, BMI, GST</dd>
+      <dt>Privacy</dt><dd><a href="privacy.html">Privacy policy</a></dd>
+      <dt>Storage</dt><dd>Settings and history stay on this device</dd>
+    </dl>
+  </div>
+</section>
+
+<script src="icons.js"></script>
+<script src="script.js"></script>
+<script src="converter.js"></script>
+</body>
+</html>

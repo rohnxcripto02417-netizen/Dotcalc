@@ -1,0 +1,11 @@
+{
+  "appId": "com.rohan.dotcalc",
+  "appName": "Dotcalc",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
